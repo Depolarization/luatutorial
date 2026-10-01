@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>封面</title>
+<style>
+  :root{
+    --bg1:#080c16; --bg2:#111a2e; --panel:#0e1524; --line:#233049;
+    --txt:#e8eef7; --dim:#8b98b0; --blue:#58a6ff; --amber:#ffc857;
+    --green:#7ee787; --red:#ff7b72;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:1920px;height:1080px;overflow:hidden}
+  body{
+    background:
+      radial-gradient(1100px 700px at 10% -10%, rgba(126,231,135,.12) 0%, transparent 60%),
+      radial-gradient(1200px 900px at 92% 115%, rgba(88,166,255,.20) 0%, transparent 60%),
+      linear-gradient(160deg, var(--bg1), var(--bg2));
+    color:var(--txt);font-family:"Microsoft YaHei","PingFang SC",sans-serif;
+  }
+  .wrap{width:1920px;height:1080px;padding:96px 110px 88px;display:flex;flex-direction:column}
+  .kicker{display:flex;align-items:center;gap:18px;margin-bottom:44px}
+  .tag{background:#16213a;border:1px solid var(--line);border-radius:999px;
+       padding:12px 28px;font-size:30px;color:#cdd8e8;letter-spacing:1px}
+  .tag.hot{background:linear-gradient(90deg,#3a2a10,#2a1f0a);border-color:#5c4620;color:var(--amber)}
+  .title{margin-top:22px;font-size:132px;font-weight:800;line-height:1.16;letter-spacing:2px}
+  .title .b{color:var(--blue)}
+  .title .a{color:var(--amber)}
+  .sub{margin-top:40px;font-size:40px;color:#b6c4d8;line-height:1.6}
+  .sub b{color:var(--green);font-weight:600}
+  .spacer{flex:1}
+  .bottom{display:flex;align-items:flex-end;justify-content:space-between;gap:40px}
+  .bits{display:flex;flex-direction:column;gap:18px}
+  .bar{display:flex;width:760px;height:104px}
+  .bar div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+           font-family:Consolas,monospace;font-size:44px;font-weight:700;color:#04101f}
+  .bar div small{font-size:20px;font-weight:400;font-family:"Microsoft YaHei";margin-top:4px}
+  .bar .hi{background:linear-gradient(180deg,#58a6ff,#2f6fbf);border-radius:14px 0 0 14px}
+  .bar .lo{background:linear-gradient(180deg,#7ee787,#3fa356);border-radius:0 14px 14px 0}
+  .formula{font-family:Consolas,monospace;font-size:44px;color:var(--amber)}
+  .meta{text-align:right;font-size:28px;color:var(--dim);line-height:1.7}
+  .meta .big{font-size:40px;color:var(--txt);font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">
+    <div class="tag hot">Lua 5.1 / 5.2</div>
+    <div class="tag">double 只有 53 位</div>
+    <div class="tag">bit32 只有 32 位</div>
+  </div>
+
+  <div class="title">用两个 <span class="b">32 位</span> 整数<br>拼出 <span class="a">64 位</span> 整数</div>
+
+  <div class="sub">
+    hi / lo 拆分 · 加减乘除 · 位运算与移位 · 二补码负数<br>
+    <b>330 组随机算例对照 Python，零失败</b> · 完整源码可直接用
+  </div>
+
+  <div class="spacer"></div>
+
+  <div class="bottom">
+    <div class="bits">
+      <div class="bar"><div class="hi">hi<small>高 32 位</small></div><div class="lo">lo<small>低 32 位</small></div></div>
+      <div class="formula">V = hi × 2<sup>32</sup> + lo</div>
+    </div>
+    <div class="meta">
+      <div class="big">Lua 64 位整数模拟</div>
+      <div>含 int64.lua · bit32 兼容层 · 自检用例</div>
+    </div>
+  </div>
+</div>
+</body>
+</html>
