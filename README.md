@@ -12,6 +12,9 @@
 | 3 | Lua 5.1 里没有 utf8 —— 用纯算术手写一个 | 变长编码在字节层面怎么解：首字节连续 1 的个数就是序列长度、`10xxxxxx` 续字节各带 6 位，全程只用乘法和取模（5.1 连 `bit32` 都没有）；九类非法输入的判定（超长编码、代理区、超 `0x10FFFF`、截断、多余续字节）、官方 `charpattern` 里那个真 0 字节为什么会让 5.1 当场崩掉，以及 `len`/`codepoint`/`char`/`offset`/`gmatch` 在 5.1 / 5.3 / 5.4 的语义分歧。322 行纯 Lua，三端实跑，40925 处断言 + 654826 处逐字节对拍 0 差异 | 见 B 站（搜索标题） | [chapter03-lua-utf8/](chapter03-lua-utf8/) |
 | 4 | Lua 的表：内存与速度实测 | 一张 `table` 其实是「数组半 + 哈希半」两台各自按 2 的幂扩容的机器：空表 56 B、数组槽 16 B、哈希节点 32 B（5.3 实测），1000 个键占 1024 格而 1025 个键占 2048 格；`#t` 给的是边界不是个数（`{1,2,nil,4,5}` 五家都给 5，`pairs` 只连续走到 2）；追加、预分配、头部插入、尾部删除四种写法的实测单价（头插 8000 次是倒着建的 290 倍）；`..` 拼接造出 93957KB 临时串而 `table.concat` 只要 152KB；字符串驻留在第 41 个字符掉头（5.1 全程驻留，5.2/5.3/5.4 从此逐份实付）；一次全量 GC 的阻塞时间随活表规模超线性增长。7 份探针脚本 × 5 个真实解释器 = 35 组，948 行实测输出，12 条结构性自检 × 5 端零失败 | 见 B 站（搜索标题） | [chapter04-lua-memory-perf/](chapter04-lua-memory-perf/) |
 | 5 | Lua 5.1 连位运算符都没有 —— 只用乘法和取模手写 CRC32 / FNV / MD5 | 位运算层复用第三章的纯算术写法并扩到 64 位（`and/or/xor/bnot/lshift/rshift/rotl/mul32`，中间值不超过 2^53，与真 `bit32` 逐函数对拍 2422 项、五端一致），按 `_VERSION` 自动在原生运算符 / `bit32` / 纯算术三个后端间降级；5.1 与 5.3 的分水岭全部现场跑出：`0x7FFFFFFFFFFFFFFF` 被折成 4294967295、`& 0xFFFFFFFF` 编译不过、大数乘法静默丢精度（Python 精确值 `…605`，5.1 给 `…608`，而 `==` 比字面量还返回 `true`）、`% 2^32` 因为 `2^32` 永远是浮点而算成 4278189680（真值 4278189677）；CRC-32 的反射多项式 `0xEDB88320` 与 check 值 `cbf43926`、正向位序为什么对不上 zlib、查表比逐位快 4.6 倍；FNV-1a 一乘一异或、64 位得手搭 limb；MD5 的 K 表 64 项逐个对上 `floor(2^32*|sin i|)`、补位零的个数 `(55-n) mod 64` 的九档边界、四个状态字必须小端逐字节 dump。库本体 546 行，五端实跑 424 / 425 / 447 / 446 / 403 项断言 0 失败，21 条样本与系统 `md5sum`、Windows `certutil`、Python `hashlib` / `zlib` 逐字节对齐 | 见 B 站（搜索标题） | [chapter05-lua-hash/](chapter05-lua-hash/) |
+| 6 | 纯手写一个 JSON 解析器 —— 递归下降与精度陷阱 | tokenizer 把字节切成 token，递归下降 parser 把 token 组装成 table，再手写序列化器写回 JSON 字节，全程只用自带字符串与 table。陷阱逐个实测：`null`/`true`/`false` 的前缀匹配（`nullx` 必须报错）、数字严格文法接住 double 的 2^53 与 `1e999`→`inf`、5.3+ 的 `integer` 子类型与回写一致性、八种转义与 `\uXXXX` 代理对合成、对象重复键后者覆盖。200 棵随机树往返 + 与 Python `json` 对拍各 200/200，五端零 FAIL | 见 B 站（搜索标题） | [chapter06-json-parser/](chapter06-json-parser/) |
+| 7 | 闭包与 upvalue —— 为什么所有回调打印同一个值 | 用 `while` 在循环里建三个回调，循环结束后依次调用输出 `4 4 4`，五个解释器一致：upvalue 是按引用捕获的单元格，不是按值拷贝；数值 `for` 每轮新建局部变量并关闭（1/2/3），`while` 全程共享（4/4/4）——分水岭在字节码的 `CLOSE`/`JMP` 里（`string.dump` 导出后手工解析，不是手写示意）；最小修复 `local v = i` 与四种等价写法对照，计数器工厂、闭包持有大表的内存滞留配合 `collectgarbage` 实测。9 条断言 × 5 端 0 失败 | 见 B 站（搜索标题） | [chapter07-closure-upvalue/](chapter07-closure-upvalue/) |
+| 8 | require 与 package.path —— 模块系统与自定义 searcher | 不背文档，把模块系统拆开实测：`package.path`/`cpath` 的 `?` 占位与顺序短路、`LUA_PATH` 与 `;;` 展开（各版本条目数现场数）、`package.loaded` 缓存与三种强制重载手段的坑、searcher 四段查找（5.1 叫 `package.loaders`、5.2+ 叫 `package.searchers`，loader 参数个数 5.1 只传 name）、手写内存 searcher 把模块源码放进 table 完全绕开文件系统、`module()` 的退场与 clean module 写法。5 脚本 × 5 解释器 = 25 组合全部运行成功 | 见 B 站（搜索标题） | [chapter08-module-searchers/](chapter08-module-searchers/) |
 
 ## 适合谁
 
@@ -26,7 +29,7 @@
 ## 约定
 
 - 每章文件夹各自独立，只含核心 Lua 源码；视频与封面随章节在 B 站发布，不在仓库内。
-- 第一章源码以 Lua 5.1 / 5.2 为目标环境（只有 `double` 与 32 位 `bit32`）；第二章源码在 5.1 / 5.2 / 5.3 / 5.4 / LuaJIT 2.1 上都能直接跑；第三章源码在 5.1 / 5.2 / 5.3 / 5.4 上都能直接跑（只用乘法和取模，不碰 `bit32`，也不碰 5.3 才有的位运算符）；第四章源码在 5.1 / 5.2 / 5.3 / 5.4 / LuaJIT 2.1 上都能直接跑（`perfkit.lua` 只用 5.1 就有的语法）；第五章源码在 5.1 / 5.2 / 5.3 / 5.4 上都能直接跑（位运算一律走 `bitop.lua`，纯算术路径只用乘法和取模，中间值不超过 2^53）。
+- 第一章源码以 Lua 5.1 / 5.2 为目标环境（只有 `double` 与 32 位 `bit32`）；第二章源码在 5.1 / 5.2 / 5.3 / 5.4 / LuaJIT 2.1 上都能直接跑；第三章源码在 5.1 / 5.2 / 5.3 / 5.4 上都能直接跑（只用乘法和取模，不碰 `bit32`，也不碰 5.3 才有的位运算符）；第四章源码在 5.1 / 5.2 / 5.3 / 5.4 / LuaJIT 2.1 上都能直接跑（`perfkit.lua` 只用 5.1 就有的语法）；第五章源码在 5.1 / 5.2 / 5.3 / 5.4 上都能直接跑（位运算一律走 `bitop.lua`，纯算术路径只用乘法和取模，中间值不超过 2^53）；第六、七章源码在 5.1 / 5.2 / 5.3 / 5.4 / LuaJIT 2.1 上都能直接跑；第八章源码五家都能跑（`loaders` vs `searchers`、loader 参数个数这些版本差异本身就是内容，以实测输出为准）。
 - 第二章入口：在 `src/` 目录下 `lua test.lua`（自检，版本无关的断言 + 分版本的断言），其余 `precision.lua` / `float_cmp.lua` / `rounding.lua` / `version_diff.lua` 是视频里逐行展示的算例。
 - 第三章入口：在 `src/` 目录下 `lua test.lua`（三层自检：对照 `vectors.lua` 里 Python 独立实现算出的标准答案 → 对照真实 5.4 的原生 `utf8` 逐字节对拍 → 随机字节串对拍）。`utf8lite.lua` 是库本体（322 行，`require` 即用），`demo.lua` / `version_probe.lua` 是视频里逐行展示的算例，`smoke.lua` 是最小冒烟。
 - 第四章入口：在 `src/` 目录下 `lua test.lua`（12 条**结构性**自检，五个解释器各跑一遍）；`perfkit.lua` 是测量工具箱（重复取最优、停 GC 测内存增量、纳秒单价），其余 6 份是视频里逐行展示的探针：`table_mem.lua`（两半计价与 2 的幂扩容）· `hash_border.lua`（`#t` 的边界语义）· `insert_cost.lua`（追加/预分配/头插/尾删）· `concat_bench.lua`（拼接耗时与临时垃圾）· `str_intern.lua`（驻留边界与判等）· `gc_probe.lua`（GC 接口、停顿规模、临时表、LuaJIT）。
@@ -38,6 +41,9 @@
 - 第五章的注意事项：
   · 别拿系统的 `cksum` 对拍 CRC32 —— 它是 POSIX 那套，多项式和初值都不一样（空串给 4294967295，而 zlib 给 0）。对拍请用 `md5sum` / `certutil -hashfile` / Python `zlib.crc32`。
   · 耗时读数跟机器走，只作同机对比（视频里逐位 vs 查表的 4.6 倍是五端各自交替多轮取最快跑出来的，换机器请重跑）。
+- 第六章入口：在 `src/` 目录下 `lua json_test.lua`（200 棵随机树生成 → 序列化 → 再解析深度相等 + 与 Python `json` 对拍，double 精度边界样本单独标注不参与严格相等）。`jsonkit.lua` 是库本体（tokenizer + 递归下降 parser + 序列化器，`require` 即用），`probe_json.lua` 是视频里逐行展示的算例。
+- 第七章入口：在 `src/` 目录下 `lua test.lua`（9 条断言，五个解释器各跑一遍）。`capture.lua`（捕获语义与「4 4 4」最小复现）· `fixes.lua`（五种修复写法对照）· `counter.lua`（计数器工厂）· `memory.lua`（闭包持有大表 + `collectgarbage` 实测）；字节码证据由 `string.dump` 导出后手工解析，解析脚本不入库（随视频工程）。
+- 第八章入口：把 `src/` 加入 `package.path` 后 `lua require_cache.lua`（重复 `require` 只执行一次的计数证据）。`env_probe.lua`（各版本 `package` 表与 `LUA_PATH` 实测）· `path_search.lua`（`?` 占位与顺序短路）· `mem_searcher.lua`（内存 searcher，模块源码在 `mods/` 里由 searcher 从表内 load）· `module_legacy.lua`（`module()` 退场与 clean module 对照）；`modkit.lua` 是演示用工具集。
 
 ## 许可证
 
