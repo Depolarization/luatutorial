@@ -1,0 +1,19 @@
+G goto 语法 -> 编译失败: [string "g_goto"]:1: '=' expected near 'lab'
+G <close> 属性 -> 编译失败: [string "g_close"]:1: unexpected symbol near '<'
+G <const> 属性 -> 编译失败: [string "g_const"]:1: unexpected symbol near '<'
+G 普通代码 -> 可用
+G loadstring 存在 -> function
+G load 能吃字符串 -> 报错 [string "<python>"]:29: bad argument #1 to 'load' (function expected, got string)
+G warn 存在 -> nil
+G bit32 存在 -> nil
+G bit 存在 -> nil
+G table.unpack 存在 -> nil
+G math.type 存在 -> nil
+G error 接受整数 level -> 接受浮点
+G xpcall 转发额外参数给被保护函数 -> nil
+G xpcall 缺 handler 的文案 -> (value expected)
+G tostring 尊重 __name -> table: <addr>
+G 索引 nil 的原始文案 -> [string "<python>"]:65: attempt to index local 't' (a nil value)
+G yield 能穿过 pcall -> 不能
+G traceback 里带不带 C 帧 pcall -> 有 [C] pcall 帧
+G getlocal 伪局部命名 -> (*temporary) 5.1-5.3/LuaJIT 第3层

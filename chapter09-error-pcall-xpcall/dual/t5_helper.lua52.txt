@@ -1,0 +1,21 @@
+== A. 裸奔：错误只有一行，也没说是哪个怪 ==
+A ok=false -> [string "<python>"]:16: attempt to perform arithmetic on field 'speed' (a nil value)
+A 崩之前已经扣过的血 -> 26,53,80
+== B. 交给助手：位置 + 每帧局部变量 ==
+B ok=false
+B -> [errkit] [string "<python>"]:16: attempt to perform arithmetic on field 'speed' (a nil value) \n   L2 [string "<python>"]:16 upvalue(step_monster) \n       局部 m=table: <addr> dt=1 (*temporary)=nil (*temporary)=53 (*temporary)=attempt to perform arithmetic on field '.. \n   L3 [string "<python>"]:25 Lua(nil) \n       局部 entities=table: <addr> dt=1 moved=2 (for index)=3 (for limit)=3 (for step)=1 i=3 e=table: <addr> \n       上值 step_monster=function: <addr> \n   L4 [C]:-1 global(xpcall) \n       局部 (*temporary)=function: <addr> \n   L5 [string "<python>"]:155 field(call) \n       局部 f=function: <addr> args=table: <addr> n=2 invoke=function: <addr> \n       上值 _ENV=table: <addr> unpack_fn=function: <addr> errkit=table: <addr>
+== C. 自己造的错也能带现场 ==
+C ok=false -> [errkit] SUM 溢出 \n   L2 [C]:-1 global(error) \n   L3 [string "<python>"]:47 Lua(nil) \n       局部 a=40 b=70 sum=110 \n       上值 _ENV=table: <addr> \n   L4 [C]:-1 global(xpcall) \n       局部 (*temporary)=function: <addr> \n   L5 [string "<python>"]:155 field(call) \n       局部 f=function: <addr> args=table: <addr> n=2 invoke=function: <addr> \n       上值 _ENV=table: <addr> unpack_fn=function: <addr> errkit=table: <addr>
+== D. 逐项重试，崩在第几项也能报出来 ==
+D 第 1 项 ok hp=26
+D 第 2 项 ok hp=53
+D 第 3 项 fail [errkit] [string "<python>"]:16: attempt to perform arithmetic on field 'speed' (a nil value) |   L2 [string "<python>"]:16 upvalue(step_monster) |   ..
+D 第 4 项 fail [errkit] [string "<python>"]:16: attempt to index local 'm' (a nil value) |   L2 [string "<python>"]:16 upvalue(step_monster) |       局部 m=nil dt=..
+== E. 修好它：缺字段就补默认值 ==
+E ok=true -> 全部处理 3 个
+E 补默认后 hp -> 26,53,80
+== F. 层号从谁开始数：多包一层就整体偏移一层 ==
+F 主 chunk 里 snapshot(1) -> level=1 limit=6 max_chars=nil parts=table: <addr> i=5 max=6
+F 主 chunk 里 snapshot(2) 找到HUNTED -> true
+F 包一层函数、传 2 -> 第 2 层 首个局部=offset 找到HUNTED=false
+F 包一层函数、传 3 -> 第 3 层 首个局部=errkit 找到HUNTED=true

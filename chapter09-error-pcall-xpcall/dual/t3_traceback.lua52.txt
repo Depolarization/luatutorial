@@ -1,0 +1,24 @@
+== A. xpcall 不给 handler ==
+A -> [string "<python>"]:12: bad argument #2 to 'xpcall' (value expected)
+== B. 同一个错误，栈还活着 vs 已经展开 ==
+B handler 内 traceback 行数=8
+B pcall 之后 traceback 行数=3
+B handler 内 -> BOOM <BR> stack traceback: <BR> 	[string "<python>"]:24: in function <[string "<python>"]:23> <BR> 	[C]: in function 'error' <BR> 	[string "<python>"]:20: in function 'inner' <BR> 	[string "<python>"]:22: in function <[string "<python>"]:17> <BR> 	[C]: in function 'xpcall' <BR> 	[string "<python>"]:17: in main chunk
+B 事后       -> 事后 <BR> stack traceback: <BR> 	[string "<python>"]:34: in main chunk
+== C. debug.traceback 的三种调用 ==
+C level=1 行数=4
+C level=2 行数=3
+C level=3 行数=2
+C level=1 -> 消息 <BR> stack traceback: <BR> 	[string "<python>"]:42: in function 'deep' <BR> 	[string "<python>"]:44: in main chunk
+C level=2 -> 消息 <BR> stack traceback: <BR> 	[string "<python>"]:44: in main chunk
+C level=3 -> 消息 <BR> stack traceback:
+== D. 把 traceback 直接当 handler ==
+D ok=false 行数=6
+D -> [string "<python>"]:55: attempt to index local 't' (a nil value) <BR> stack traceback: <BR> 	[string "<python>"]:55: in function 'use_nil' <BR> 	[string "<python>"]:56: in function <[string "<python>"]:53> <BR> 	[C]: in function 'xpcall' <BR> 	[string "<python>"]:53: in main chunk
+D 带额外参数调用 xpcall(f, tb, "额外") -> ok=false E <BR> stack traceback: <BR> 	[C]: in function 'error' <BR> 	[string "<python>"]:60: in function <[string "<python>"]:60> <BR> 	[C]: in function 'xpcall' <BR> 	[string "<python>"]:60: in main chunk
+== E. 挂起的协程也能 traceback ==
+E resume=true 值=pause status=suspended
+E traceback(co) 可用=true -> stack traceback: <BR> 	[C]: in function 'yield' <BR> 	[string "<python>"]:67: in function <[string "<python>"]:66> <BR> 	(...tail calls...)
+== F. errkit 助手 vs 原生 traceback ==
+F ok=false
+F -> [errkit] 需要现场变量 \n   L2 [C]:-1 global(error) \n   L3 [string "<python>"]:80 Lua(nil) \n       局部 count=7 label=hp cfg=table: <addr> \n       上值 _ENV=table: <addr> \n   L4 [C]:-1 global(xpcall) \n       局部 (*temporary)=function: <addr> \n   L5 [string "<python>"]:155 field(call) \n       局部 f=function: <addr> args=table: <addr> n=1 invoke=function: <addr> \n       上值 _ENV=table: <addr> unpack_fn=function: <addr> errkit=table: <addr>

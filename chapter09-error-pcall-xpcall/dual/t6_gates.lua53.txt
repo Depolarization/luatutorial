@@ -1,0 +1,19 @@
+G goto 语法 -> 可用
+G <close> 属性 -> 编译失败: [string "g_close"]:1: unexpected symbol near '<'
+G <const> 属性 -> 编译失败: [string "g_const"]:1: unexpected symbol near '<'
+G 普通代码 -> 可用
+G loadstring 存在 -> nil
+G load 能吃字符串 -> 可用 值=7
+G warn 存在 -> nil
+G bit32 存在 -> nil
+G bit 存在 -> nil
+G table.unpack 存在 -> function
+G math.type 存在 -> function
+G error 接受整数 level -> 拒绝浮点
+G xpcall 转发额外参数给被保护函数 -> SENT
+G xpcall 缺 handler 的文案 -> (function expected, got no value)
+G tostring 尊重 __name -> mytype: <addr>
+G 索引 nil 的原始文案 -> [string "<python>"]:65: attempt to index a nil value (local 't')
+G yield 能穿过 pcall -> 能 V
+G traceback 里带不带 C 帧 pcall -> 有 [C] pcall 帧
+G getlocal 伪局部命名 -> (*temporary) 5.1-5.3/LuaJIT 第3层

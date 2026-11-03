@@ -1,0 +1,17 @@
+PASS compile_returns_function
+PASS compile_runs
+PASS compile_rejects_syntax
+PASS compile_gives_message
+PASS describe_string
+PASS describe_table
+PASS describe_empty_table
+PASS describe_number
+PASS describe_nil
+PASS redact_table_addr
+PASS snapshot_sees_alpha
+PASS snapshot_sees_beta
+PASS call_detects_error
+PASS diag_has_describe
+PASS diag_has_frames
+PASS catch_keeps_table
+SUMMARY pass=16 fail=0

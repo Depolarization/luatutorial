@@ -1,0 +1,44 @@
+== A. 三层调用，level 从 0 数到 6 ==
+A level=0 -> M
+A level=1 -> [string "<python>"]:7: M
+A level=2 -> [string "<python>"]:11: M
+A level=3 -> [string "<python>"]:15: M
+A level=4 -> M
+A level=5 -> [string "<python>"]:18: M
+A level=6 -> M
+== B. 尾调用会把栈帧折叠掉一层 ==
+B 中间层非尾调用 + 叶子非尾调用 level=1 -> [string "<python>"]:25: S
+B 中间层尾调用   + 叶子非尾调用 level=1 -> [string "<python>"]:25: S
+B 中间层非尾调用 + 叶子尾调用   level=1 -> [string "<python>"]:32: S
+B 中间层尾调用   + 叶子尾调用   level=1 -> S
+B 中间层非尾调用 + 叶子非尾调用 level=2 -> [string "<python>"]:32: S
+B 中间层尾调用   + 叶子非尾调用 level=2 -> S
+B 中间层非尾调用 + 叶子尾调用   level=2 -> S
+B 中间层尾调用   + 叶子尾调用   level=2 -> [string "<python>"]:46: S
+B 中间层非尾调用 + 叶子非尾调用 level=3 -> S
+B 中间层尾调用   + 叶子非尾调用 level=3 -> [string "<python>"]:46: S
+B 中间层非尾调用 + 叶子尾调用   level=3 -> [string "<python>"]:46: S
+B 中间层尾调用   + 叶子尾调用   level=3 -> S
+== C. level 取浮点 / 字符串 / 布尔 / 负数 / nil ==
+C level=1 -> [string "<python>"]:62: V
+C level=1.7 -> [string "<python>"]:62: V
+C level="2" -> V
+C level=true -> [string "<python>"]:62: bad argument #2 to 'error' (number expected, got boolean)
+C level=-1 -> V
+C level=nil -> [string "<python>"]:62: V
+== D. 同一处崩溃，十种抛法 ==
+D error(string),      -> [string "<python>"]:73: no such item [string]
+D error(string,0),    -> no such item [string]
+D error(table),       -> table{code=404, msg=no such item} [table]
+D error(tbl,2),       -> table{code=404, msg=no such item} [table]
+D assert(false,msg),  -> no such item [string]
+D assert(false,tbl),  -> table{code=404, msg=nil} [table]
+D assert(nil),        -> assertion failed! [string]
+D error(nil),         -> nil(nil) [nil]
+D error(false),       -> boolean(false) [boolean]
+D math.sqrt(str),     -> bad argument #1 to '?' (number expected, got string) [string]
+== E. 位置前缀的有无 ==
+E 默认抛法前 24 字符 -> [[string "<python>"]:85: ]
+E 字符串错误 有前缀 -> true
+E level=0    有前缀 -> false
+E 表错误对象 有前缀 -> false

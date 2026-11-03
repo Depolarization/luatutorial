@@ -1,0 +1,23 @@
+== A. pcall 的返回值个数 ==
+A 成功 select#=4 值=1,2,3
+A 失败 select#=2 ok=false 第二个返回值=bad
+A 返回 0 个值时 select#=1
+A 错误对象是 nil 时 select#=2 值=nil
+== B. 被 pcall 吞掉的错误：调用方分不清「没有」和「坏了」 ==
+B 吞错版 正常      -> atk=10
+B 吞错版 查无此项  -> atk=nil  (其实崩了)
+B 吞错版 两者相同吗 -> true
+B 不吞时同一调用抛 -> [string "<python>"]:28: attempt to index a nil value
+== C. 非字符串错误对象一路保留 ==
+C type=table 同一个表=true code=404
+C tostring=mod_error(404)
+C 裸表加 __name 的 tostring=mytype: <addr>
+C 字符串错误 pcall 后=[string "<python>"]:46: prefix
+== D. xpcall 的额外参数到底给了谁 ==
+D 成功路径 f 收到 [a=A1 b=B2 select#=2] handler 未执行=nil
+D 失败路径 f 收到 [a=X b=Y]
+D handler 只拿到 [IN_F] ok=false 返回=final
+== E. handler 自己再抛 ==
+E ok=false -> error in error handling
+== F. yield 能不能穿过 pcall ==
+F resume=true 从 pcall 里 yield 出来 nil

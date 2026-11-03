@@ -1,0 +1,33 @@
+== A. 同一种坏法，文案里能不能报出名字 ==
+A 索引 local      -> [string "<python>"]:12: attempt to index local 't' (a nil value)
+A 索引 upvalue    -> [string "<python>"]:13: attempt to index upvalue 'nillocal' (a nil value)
+A 索引 global     -> [string "<python>"]:14: attempt to index global 'zz_missing_global' (a nil value)
+A 索引 表字段     -> [string "<python>"]:15: attempt to index field 'missing' (a nil value)
+A 索引 表达式结果 -> [string "<python>"]:16: attempt to index field '?' (a nil value)
+A 调用 local      -> [string "<python>"]:17: attempt to call local 'f' (a nil value)
+A 调用 global     -> [string "<python>"]:18: attempt to call global 'zz_missing_global' (a nil value)
+A 取 nil 长度     -> [string "<python>"]:19: attempt to get length of local 'v' (a nil value)
+A 拼接 nil        -> [string "<python>"]:20: attempt to concatenate local 'v' (a nil value)
+A 算术 nil        -> [string "<python>"]:21: attempt to perform arithmetic on local 'v' (a nil value)
+A 比较 nil        -> [string "<python>"]:22: attempt to compare nil with number
+== B. 三层配置链：文案只说值坏在哪，不说哪一层取错 ==
+B 链取对了        -> tcp://127.0.0.1:5432
+B host 少取一层   -> [string "<python>"]:41: attempt to concatenate local 'host' (a table value)
+B 配置里没有 db   -> [string "<python>"]:46: attempt to concatenate local 'port' (a nil value)
+B 整份配置是 nil  -> [string "<python>"]:46: attempt to concatenate local 'port' (a nil value)
+== C. 守卫写法各自把错误变成什么 ==
+C t and t.x       -> nil
+C (t or {}).x     -> nil
+C rawget 用在 nil -> [string "<python>"]:57: bad argument #1 to 'rawget' (table expected, got nil)
+C pcall 包一层    -> ok=false 值=[string "<python>"]:59: attempt to index upvalue 'missing' (a nil value)
+== D. 尽早炸：带 level 的字段检查，位置指回调用方 ==
+D 少 db      -> [string "<python>"]:73: E_MISSING 缺字段 db 于 config.db
+D 整份是 nil -> [string "<python>"]:73: E_TYPE 配置节点不是表: config.db
+D 少 port    -> [string "<python>"]:75: E_MISSING 缺字段 port 于 config.db.port
+D 正常       -> tcp://127.0.0.1:5432
+D 表错误对象 -> table{code=E_TYPE, msg=db} type=table 带位置前缀吗=false
+== E. 静默传播的代价：算错了也没人报错 ==
+E 正常单位        dps=100 type=number
+E 字段名打错      dps=50  <- 静默按 1 算，一声不吭
+E 单位是 nil      dps=0  <- 静默按 0 算，一声不吭
+E 三种结果一样吗  -> false
