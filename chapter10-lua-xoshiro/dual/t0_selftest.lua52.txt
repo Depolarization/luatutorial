@@ -1,0 +1,11 @@
+VERSION	Lua 5.2	LUAJIT	false
+K7 bit32来源	原生 bit32
+K6 向量载入	失败:找不到 xoshiro_vectors.lua（从工程根目录运行 run_lua.py）
+K1 u64已知答案	0/0
+K2 splitmix64已知答案	0/0
+K3 naive状态已知答案	0/0
+K4 同种子确定性	1/1
+K5 全零状态	1/1
+K8 主向量首输出	0/0
+SELF-CHECK	2/2
+结论	公共库五项自检全过，对拍才作数

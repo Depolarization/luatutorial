@@ -1,8 +1,9 @@
 # luatutorial —— Lua 实战教程系列
 
 一系列围绕 **Lua** 的实战教程。每一章是一个独立、可运行的专题，配有核心 Lua 源码与一段讲解视频。
-**每个章节文件夹下只放该章的核心 Lua 源码**（GitHub 仅作为视频的源码附件托管，构建/录制等流水线不入库）；
-第九章例外地带了 `dual/` —— 那一章的内容就是各版本报错文案本身，只给脚本不给输出等于让读者自己复现一遍。
+**章节文件夹以核心 Lua 源码为主**（GitHub 仅作为视频的源码附件托管，构建/录制等流水线不入库）；
+第九章例外地带了 `dual/` —— 那一章的内容就是各版本报错文案本身，只给脚本不给输出等于让读者自己复现一遍；
+第十、十四章同样附了 `dual/`（五端原始输出），第十四章另有崩溃矩阵 `crash_results.json`。
 
 ## 章节
 
@@ -17,6 +18,8 @@
 | 7 | 闭包与 upvalue —— 为什么所有回调打印同一个值 | 用 `while` 在循环里建三个回调，循环结束后依次调用输出 `4 4 4`，五个解释器一致：upvalue 是按引用捕获的单元格，不是按值拷贝；数值 `for` 每轮新建局部变量并关闭（1/2/3），`while` 全程共享（4/4/4）——分水岭在字节码的 `CLOSE`/`JMP` 里（`string.dump` 导出后手工解析，不是手写示意）；最小修复 `local v = i` 与四种等价写法对照，计数器工厂、闭包持有大表的内存滞留配合 `collectgarbage` 实测。9 条断言 × 5 端 0 失败 | 见 B 站（搜索标题） | [chapter07-closure-upvalue/](chapter07-closure-upvalue/) |
 | 8 | require 与 package.path —— 模块系统与自定义 searcher | 不背文档，把模块系统拆开实测：`package.path`/`cpath` 的 `?` 占位与顺序短路、`LUA_PATH` 与 `;;` 展开（各版本条目数现场数）、`package.loaded` 缓存与三种强制重载手段的坑、searcher 四段查找（5.1 叫 `package.loaders`、5.2+ 叫 `package.searchers`，loader 参数个数 5.1 只传 name）、手写内存 searcher 把模块源码放进 table 完全绕开文件系统、`module()` 的退场与 clean module 写法。5 脚本 × 5 解释器 = 25 组合全部运行成功 | 见 B 站（搜索标题） | [chapter08-module-searchers/](chapter08-module-searchers/) |
 | 9 | error / pcall / xpcall —— 错误处理的三个层级 | `error(msg, level)` 的 level 把位置钉在哪一行（0~6 逐个实测，五家输出完全一致），尾调用会把栈帧折叠掉、同一个 level=1 行号直接指回主 chunk；十一种取空值的写法（索引/调用/取长度/拼接/算术/比较）逐行对照，5.1 / 5.2 / LuaJIT 说 `attempt to index local 't' (a nil value)`，5.3 / 5.4 把名字挪进括号倒过来说；位置前缀只给字符串，`error` 传 table 永远不带行号；pcall 的返回值结构（`select('#')` 实测 4 / 2 / 1 / 2 四种）与吞掉错误之后「没有」和「坏了」长得一样；xpcall 的 handler 里栈才活着（handler 内 8 帧、事后只剩 3 行标题），`debug.traceback` 自己的 level 4→3→2 每加一层少一帧；nil 的静默传播与四种守卫；手写调试助手 `errkit.lua` 出错自动打印位置 + 每帧局部变量快照，一次 pcall 都不用。7 份探针 × 5 个真实解释器 = 35 组输出，181 行里同位置五家一致 122 行，自检 `pass=16 fail=0` 五端全过，另附 19 项能力门 × 5 家一张表 | 见 B 站（搜索标题） | [chapter09-error-pcall-xpcall/](chapter09-error-pcall-xpcall/) |
+| 10 | 手写 xoshiro256** —— 可复现随机数与播种陷阱 | 随机数的最高级形态不是「更随机」而是「可复现」：同一个种子必须吐出同一条序列。五家解释器同种子输出全不同源（5.1/5.2/5.3 是 C 运行库 `rand()` 的近亲，LuaJIT 与 5.4 各自独立）；Windows 上 5.3 的 `rand()` 只有 15 位熵（`math.random(0, 2^24)` 抽 2000 次全落在 512 的倍数上）；5.4 内部就是 xoshiro256**，`randomseed(42)` 摆状态 `{42, 0xff, 0, 0}` 丢弃 16 个输出后与官方 C 参考翻译的 1000 值向量逐值全中；纯 Lua 实现复用第一章 int64 方案（hi/lo 双 32 位 + `bit32` 纯算术兜底），同一份代码五端逐位一致；splitmix64 播种的反面教材 `{1,2,3,4}`、全零状态不动点、8×8 世界存档只存一个 u64。5 份探针 × 5 个真实解释器 = 25 组输出，自检 22 项 × 5 端全过，1000 值对拍差异 0 | 见 B 站（搜索标题） | [chapter10-lua-xoshiro/](chapter10-lua-xoshiro/) |
+| 14 | table.sort 的雷区 —— 稳定归并排序与比较器契约 | 非法比较器不会让 Lua 真崩：`invalid order function for sorting` 是五端 `pcall` 都接得住的普通错误；但 5.1 的护栏会漏（扫描越界把栈垃圾喂给比较器，200 组里 135 组先撞上 `compare nil`），`{2,2,1}` 配 `>=` 五端全部「返回成功、结果没排」；排序不稳定的最小复现只要 4 个元素，两步排序把并列名次打散；带洞数组与 `#` 的边界逐端实测。自写自底向上稳定归并（gap 翻倍无递归 + 相等取左 + 比较器契约自检），10 万随机数组与 Python `sorted` 五端 0 差异，LuaJIT 上归并 13ms 反超原生 25ms。8 份探针 × 5 个真实解释器 = 40 组输出（原始输出与崩溃矩阵在 `dual/`、`crash_results.json`），自检 `pass=21 fail=0` 五端全过 | 见 B 站（搜索标题） | [chapter14-sort-merge-stable/](chapter14-sort-merge-stable/) |
 
 ## 适合谁
 

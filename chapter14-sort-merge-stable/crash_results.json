@@ -1,0 +1,436 @@
+{
+ "timeout": 20,
+ "cases": [
+  "GE3",
+  "GE8",
+  "GE64",
+  "GE5000",
+  "TRUE64",
+  "TRUE5000",
+  "NILCMP64",
+  "COIN64",
+  "CMPERR"
+ ],
+ "rts": {
+  "luajit21": {
+   "GE3": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE3 sorted=true",
+     "CASE GE3 result=2,2,1",
+     "CASE GE3 nondesc=false"
+    ],
+    "verdict_text": "GE3 -> 没崩 | 返回成功 | 但结果不是有序的 | 结果=2,2,1（0.05s）"
+   },
+   "GE8": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE8 sorted=false",
+     "CASE GE8 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE8 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "GE64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE64 sorted=false",
+     "CASE GE64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "GE5000": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE5000 sorted=false",
+     "CASE GE5000 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE5000 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "TRUE64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE TRUE64 sorted=false",
+     "CASE TRUE64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "TRUE64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "TRUE5000": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE TRUE5000 sorted=false",
+     "CASE TRUE5000 err=invalid order function for sorting"
+    ],
+    "verdict_text": "TRUE5000 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "NILCMP64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE NILCMP64 sorted=true",
+     "CASE NILCMP64 result=1,43,42,41,44,46,45,47,40,38,34,39,35,37,36,33,48,50,59,58,60,62,61,49"
+    ],
+    "verdict_text": "NILCMP64 -> 没崩 | 返回成功 | 结果=1,43,42,41,44,46,45,47,40,38,34,39,35,37,36,33,48,50,59,58,60,62,61,49（0.05s）"
+   },
+   "COIN64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE COIN64 sorted=false",
+     "CASE COIN64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "COIN64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "CMPERR": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE CMPERR sorted=false calls=7",
+     "CASE CMPERR err=boom inside cmp #7"
+    ],
+    "verdict_text": "CMPERR -> pcall 接住 | boom inside cmp #7（0.05s）"
+   }
+  },
+  "lua51": {
+   "GE3": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE3 sorted=true",
+     "CASE GE3 result=2,2,1",
+     "CASE GE3 nondesc=false"
+    ],
+    "verdict_text": "GE3 -> 没崩 | 返回成功 | 但结果不是有序的 | 结果=2,2,1（0.05s）"
+   },
+   "GE8": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE8 sorted=false",
+     "CASE GE8 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE8 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "GE64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE64 sorted=false",
+     "CASE GE64 err=[string \"<python>\"]:33: attempt to compare number with nil"
+    ],
+    "verdict_text": "GE64 -> pcall 接住 | [string \"<python>\"]:33: attempt to compare number with nil（0.05s）"
+   },
+   "GE5000": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE5000 sorted=false",
+     "CASE GE5000 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE5000 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "TRUE64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE TRUE64 sorted=false",
+     "CASE TRUE64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "TRUE64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "TRUE5000": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE TRUE5000 sorted=false",
+     "CASE TRUE5000 err=invalid order function for sorting"
+    ],
+    "verdict_text": "TRUE5000 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "NILCMP64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE NILCMP64 sorted=true",
+     "CASE NILCMP64 result=1,43,42,41,44,46,45,47,40,38,34,39,35,37,36,33,48,50,59,58,60,62,61,49"
+    ],
+    "verdict_text": "NILCMP64 -> 没崩 | 返回成功 | 结果=1,43,42,41,44,46,45,47,40,38,34,39,35,37,36,33,48,50,59,58,60,62,61,49（0.05s）"
+   },
+   "COIN64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE COIN64 sorted=false",
+     "CASE COIN64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "COIN64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "CMPERR": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE CMPERR sorted=false calls=7",
+     "CASE CMPERR err=boom inside cmp #7"
+    ],
+    "verdict_text": "CMPERR -> pcall 接住 | boom inside cmp #7（0.05s）"
+   }
+  },
+  "lua52": {
+   "GE3": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE3 sorted=true",
+     "CASE GE3 result=2,2,1",
+     "CASE GE3 nondesc=false"
+    ],
+    "verdict_text": "GE3 -> 没崩 | 返回成功 | 但结果不是有序的 | 结果=2,2,1（0.05s）"
+   },
+   "GE8": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE8 sorted=false",
+     "CASE GE8 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE8 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "GE64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE64 sorted=false",
+     "CASE GE64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "GE5000": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE5000 sorted=false",
+     "CASE GE5000 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE5000 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "TRUE64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE TRUE64 sorted=false",
+     "CASE TRUE64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "TRUE64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "TRUE5000": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE TRUE5000 sorted=false",
+     "CASE TRUE5000 err=invalid order function for sorting"
+    ],
+    "verdict_text": "TRUE5000 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "NILCMP64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE NILCMP64 sorted=true",
+     "CASE NILCMP64 result=1,43,42,41,44,46,45,47,40,38,34,39,35,37,36,33,48,50,59,58,60,62,61,49"
+    ],
+    "verdict_text": "NILCMP64 -> 没崩 | 返回成功 | 结果=1,43,42,41,44,46,45,47,40,38,34,39,35,37,36,33,48,50,59,58,60,62,61,49（0.05s）"
+   },
+   "COIN64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE COIN64 sorted=false",
+     "CASE COIN64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "COIN64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "CMPERR": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE CMPERR sorted=false calls=7",
+     "CASE CMPERR err=boom inside cmp #7"
+    ],
+    "verdict_text": "CMPERR -> pcall 接住 | boom inside cmp #7（0.05s）"
+   }
+  },
+  "lua53": {
+   "GE3": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE3 sorted=true",
+     "CASE GE3 result=2,2,1",
+     "CASE GE3 nondesc=false"
+    ],
+    "verdict_text": "GE3 -> 没崩 | 返回成功 | 但结果不是有序的 | 结果=2,2,1（0.05s）"
+   },
+   "GE8": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE8 sorted=false",
+     "CASE GE8 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE8 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "GE64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE64 sorted=false",
+     "CASE GE64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "GE5000": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE5000 sorted=false",
+     "CASE GE5000 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE5000 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "TRUE64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE TRUE64 sorted=false",
+     "CASE TRUE64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "TRUE64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "TRUE5000": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE TRUE5000 sorted=false",
+     "CASE TRUE5000 err=invalid order function for sorting"
+    ],
+    "verdict_text": "TRUE5000 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "NILCMP64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE NILCMP64 sorted=true",
+     "CASE NILCMP64 result=1,43,42,41,44,46,45,47,40,38,34,39,35,37,36,33,48,50,59,58,60,62,61,49"
+    ],
+    "verdict_text": "NILCMP64 -> 没崩 | 返回成功 | 结果=1,43,42,41,44,46,45,47,40,38,34,39,35,37,36,33,48,50,59,58,60,62,61,49（0.05s）"
+   },
+   "COIN64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE COIN64 sorted=false",
+     "CASE COIN64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "COIN64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "CMPERR": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE CMPERR sorted=false calls=7",
+     "CASE CMPERR err=boom inside cmp #7"
+    ],
+    "verdict_text": "CMPERR -> pcall 接住 | boom inside cmp #7（0.05s）"
+   }
+  },
+  "lua54": {
+   "GE3": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE3 sorted=true",
+     "CASE GE3 result=2,2,1",
+     "CASE GE3 nondesc=false"
+    ],
+    "verdict_text": "GE3 -> 没崩 | 返回成功 | 但结果不是有序的 | 结果=2,2,1（0.05s）"
+   },
+   "GE8": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE8 sorted=false",
+     "CASE GE8 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE8 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "GE64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE64 sorted=false",
+     "CASE GE64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "GE5000": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE GE5000 sorted=false",
+     "CASE GE5000 err=invalid order function for sorting"
+    ],
+    "verdict_text": "GE5000 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "TRUE64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE TRUE64 sorted=false",
+     "CASE TRUE64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "TRUE64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "TRUE5000": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE TRUE5000 sorted=false",
+     "CASE TRUE5000 err=invalid order function for sorting"
+    ],
+    "verdict_text": "TRUE5000 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "NILCMP64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE NILCMP64 sorted=true",
+     "CASE NILCMP64 result=1,43,42,41,44,46,45,47,40,38,34,39,35,37,36,33,48,50,59,58,60,62,61,49"
+    ],
+    "verdict_text": "NILCMP64 -> 没崩 | 返回成功 | 结果=1,43,42,41,44,46,45,47,40,38,34,39,35,37,36,33,48,50,59,58,60,62,61,49（0.05s）"
+   },
+   "COIN64": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE COIN64 sorted=false",
+     "CASE COIN64 err=invalid order function for sorting"
+    ],
+    "verdict_text": "COIN64 -> pcall 接住 | invalid order function for sorting（0.05s）"
+   },
+   "CMPERR": {
+    "verdict": "ok",
+    "secs": 0.05,
+    "lines": [
+     "CASE CMPERR sorted=false calls=7",
+     "CASE CMPERR err=boom inside cmp #7"
+    ],
+    "verdict_text": "CMPERR -> pcall 接住 | boom inside cmp #7（0.05s）"
+   }
+  }
+ }
+}

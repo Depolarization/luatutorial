@@ -1,0 +1,9 @@
+GE3 -> 没崩 | 返回成功 | 但结果不是有序的 | 结果=2,2,1（0.05s）
+GE8 -> pcall 接住 | invalid order function for sorting（0.05s）
+GE64 -> pcall 接住 | invalid order function for sorting（0.05s）
+GE5000 -> pcall 接住 | invalid order function for sorting（0.05s）
+TRUE64 -> pcall 接住 | invalid order function for sorting（0.05s）
+TRUE5000 -> pcall 接住 | invalid order function for sorting（0.05s）
+NILCMP64 -> 没崩 | 返回成功 | 结果=1,43,42,41,44,46,45,47,40,38,34,39,35,37,36,33,48,50,59,58,60,62,61,49（0.05s）
+COIN64 -> pcall 接住 | invalid order function for sorting（0.05s）
+CMPERR -> pcall 接住 | boom inside cmp #7（0.05s）

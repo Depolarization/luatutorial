@@ -1,0 +1,15 @@
+== A. 字面量里的洞 ==
+A {3,nil,1} # -> 3
+A {3,nil,1} sort -> 报错被接住 err=attempt to compare nil with number
+== B. 排好再挖中间：{1..5} 挖掉第 3 个 ==
+B {1,2,_,4,5} # -> 5
+B {1,2,_,4,5} sort -> 报错被接住 err=attempt to compare nil with number
+== C. 挖中间再补尾：{1..5} 挖 3、挂 t[6]=9 ==
+C {1,2,_,4,5,9} # -> 6
+C {1,2,_,4,5,9} sort -> 报错被接住 err=attempt to compare nil with number
+== D. 比较器见到了 nil 吗 ==
+D 比较次数 -> 9 次，其中见到 nil 3 次
+D 容错比较器 -> 成功 _,1,3,4,5,_
+== E. 默认比较器撞上 nil 的文案 ==
+E {1,nil,3} -> attempt to compare nil with number
+E {3,_,1} -> attempt to compare nil with number

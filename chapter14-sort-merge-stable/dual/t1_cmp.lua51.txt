@@ -1,0 +1,16 @@
+== A. 正常比较器 ==
+A 输入 -> 63,94,75,34,82,1,96,20,25,5,19,97,99,78,83,39
+A 默认升序 -> 1,5,19,20,25,34,39,63,75,78,82,83,94,96,97,99
+A 显式降序 -> 99,97,96,94,83,82,78,75,63,39,34,25,20,19,5,1
+A 记录按键 -> 10,3,6,9,2,5,8,1,4,7
+== B. 非法比较器家族 ==
+B GE3 {2,2,1} -> 返回成功 result=2,2,1
+B GE64 重复键 -> 报错被接住 err=[string "<python>"]:37: attempt to compare number with nil
+B TRUE64 -> 报错被接住 err=invalid order function for sorting
+B NILCMP64 -> 返回成功 result=1,43,42,41,44,46,45,47,40,38,34,39,35,37,36,33
+B COIN64 -> 报错被接住 err=invalid order function for sorting
+B CMPERR -> 报错被接住 err=boom inside cmp #7
+B CMPERR 比较次数 -> 7
+== C. 护栏覆盖率：>= 比较器扫 200 组随机重复键（n=40） ==
+C 统计 -> invalid=65 其他报错=135 静默成功=0 其中结果无序=0
+C 其他报错一例 -> [string "<python>"]:63: attempt to compare nil with number

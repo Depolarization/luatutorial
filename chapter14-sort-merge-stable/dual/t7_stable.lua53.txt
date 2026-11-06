@@ -1,0 +1,7 @@
+VERSION stable-crosscheck
+SAMPLE n=50 mod=8 msort_diff=0 native_diff=47
+SAMPLE n=200 mod=16 msort_diff=0 native_diff=187
+SAMPLE n=1000 mod=32 msort_diff=0 native_diff=967
+SAMPLE n=5000 mod=1000 msort_diff=0 native_diff=3986
+SAMPLE n=20000 mod=9999 msort_diff=0 native_diff=11362
+TOTAL msort_diff=0 native_diff=16549

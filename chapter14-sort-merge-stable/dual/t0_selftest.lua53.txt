@@ -1,0 +1,27 @@
+VERSION	Lua 5.3	LUAJIT	false
+PASS gen_same_seed_same_seq
+GEN 32,22,38,45,17,1,29,3,26,13,18,46
+PASS msort_sorted_n2
+PASS msort_content_n2
+PASS msort_sorted_n7
+PASS msort_content_n7
+PASS msort_sorted_n100
+PASS msort_content_n100
+PASS msort_sorted_n2000
+PASS msort_content_n2000
+PASS msort_empty
+PASS msort_single
+PASS msort_presorted
+PASS msort_reversed
+PASS msort_all_equal
+PASS msort_stable_2000
+STABLE msort -> 14,46,47,53,59,63,64,71,80,90,92,101
+PASS msort_matches_isort
+PASS checkcmp_passes_valid
+PASS checkcmp_catches_ge
+CMPMSG cmp(x,x) 为真，不是严格序（常见于 >= / <=）
+PASS msort_checked_raises
+CHECKEDERR comparator 契约自检失败: cmp(x,x) 为真，不是严格序（常见于 >= / <=）
+PASS bench_positive
+PASS prealloc_slots
+SUMMARY pass=21 fail=0
